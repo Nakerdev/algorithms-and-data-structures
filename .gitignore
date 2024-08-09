@@ -1,3 +1,9 @@
+# Visual Studio Code
 .vscode/ 
 
+# Compilation results
 build/
+
+# Personal scripts for development experience
+compile.bat
+execute.bat
