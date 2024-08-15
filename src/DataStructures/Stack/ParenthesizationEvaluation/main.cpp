@@ -3,6 +3,60 @@
 #include <sstream>
 #include <vector>
 #include <stack>
+#include <unordered_map>
+
+std::unordered_map<char, char> openAndCloseCharacters = 
+    {
+        { '(', ')' },
+        { '[', ']' }
+    };
+
+bool IsOpeningCharacter(const char& character)
+{
+    return openAndCloseCharacters.count(character) > 0;
+}
+
+bool IsParenthesesSequenceCorrectlyNested(
+    const std::vector<char>& parenthesesSequence, 
+    int& errorPosition)
+{
+    std::stack<char> openCharacters;
+    for(int i = 0; i < parenthesesSequence.size() - 1; ++i)
+    {
+        auto character = parenthesesSequence[i];
+
+        if(IsOpeningCharacter(character))
+        {
+            openCharacters.push(character);
+            continue;
+        }
+
+        if(openCharacters.empty())
+        {
+            errorPosition = (i + 1);
+            return false;
+        }
+        else 
+        {
+            auto lastOpenCharacter = openCharacters.top();
+            auto closeCharacter = openAndCloseCharacters.at(lastOpenCharacter);
+            if(character != closeCharacter) 
+            {
+                errorPosition = (i + 1);
+                return false;
+            }
+            openCharacters.pop();
+        }
+    }
+
+    if(!openCharacters.empty())
+    {
+        errorPosition = (static_cast<int>(parenthesesSequence.size()) - 1);
+        return false;
+    }
+
+    return true;
+}
 
 int main()
 {
@@ -17,40 +71,17 @@ int main()
         return 1;
     }
 
-    std::stack<char> openParentheses;
+    int errorPosition = 0;
     std::vector<char> parenthesesSequence(input.begin(), input.end());
-    for(int i = 0; i < parenthesesSequence.size() - 1; ++i)
+    if(IsParenthesesSequenceCorrectlyNested(parenthesesSequence, errorPosition))
     {
-        auto character = parenthesesSequence[i];
-        if(character == '(' || character == '[')
-        {
-            openParentheses.push(character);
-        }
-        else if((character == ')' || character == ']') && openParentheses.empty())
-        {
-            std::cout << "Incorrect " << (i + 1) << std::endl;
-            return 1;
-        }
-        else 
-        {
-            auto lastOpenParentheses = openParentheses.top();
-            if((lastOpenParentheses == '(' && character != ')')
-                || (lastOpenParentheses == '[' && character != ']')) 
-            {
-                std::cout << "Incorrect " << (i + 1) << std::endl;
-                return 1;
-            }
-            openParentheses.pop();
-        }
+        std::cout << "Correct" << std::endl;
+    }
+    else 
+    {
+        std::cout << "Incorrect " << errorPosition << std::endl;
     }
 
-    if(!openParentheses.empty())
-    {
-        std::cout << "Incorrect " << (parenthesesSequence.size() - 1) << std::endl;
-        return 1;
-    }
-
-    std::cout << "Correct" << std::endl;
     return 0;
 }
 
