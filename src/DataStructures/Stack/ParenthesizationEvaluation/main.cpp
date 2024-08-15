@@ -26,6 +26,11 @@ int main()
         {
             openParentheses.push(character);
         }
+        else if((character == ')' || character == ']') && openParentheses.empty())
+        {
+            std::cout << "Incorrect " << (i + 1) << std::endl;
+            return 1;
+        }
         else 
         {
             auto lastOpenParentheses = openParentheses.top();
