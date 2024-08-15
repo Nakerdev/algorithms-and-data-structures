@@ -4,6 +4,52 @@
 #include <vector>
 #include <stack>
 
+void deserializeNumberSequence(
+    const std::string& serializedNumberSequence,
+    std::vector<int>& numberSequence)
+{
+    std::stringstream inputStream(serializedNumberSequence);
+    std::string sequenceElement;
+    while(std::getline(inputStream, sequenceElement, ' '))
+    {
+        numberSequence.push_back(std::stoi(sequenceElement));
+    }
+}
+
+bool isPalindrome(
+    const int& numberOfElements,
+    const std::vector<int>& numberSequence)
+{
+    if(numberOfElements == 1)
+    {
+        return true;
+    }
+
+    int intermediateElementOfTheSequence = static_cast<int>(numberSequence.size()) / 2;
+    
+    std::stack<int> elementsStack;
+    for(int i = 1; i < intermediateElementOfTheSequence; ++i) 
+    {
+        elementsStack.push(numberSequence[i]);
+    }
+
+    if(numberOfElements % 2 != 0)
+    {
+        intermediateElementOfTheSequence += 1;
+    }
+
+    for(int i = intermediateElementOfTheSequence; i <= numberOfElements ; ++i) 
+    {
+        if(numberSequence[i] != elementsStack.top())
+        {
+            return false;
+        }
+        elementsStack.pop();
+    }
+
+    return true;
+}
+
 int main()
 {
     std::cout << "Enter a sequence of numbers separated by spaces. \n";
@@ -13,20 +59,15 @@ int main()
     std::string input = "";
     std::getline(std::cin, input);
 
-    std::stringstream inputStream(input);
     std::vector<int> numberSequence;
-    std::string sequenceElement;
-    while(std::getline(inputStream, sequenceElement, ' '))
+    try
     {
-        try
-        {
-            numberSequence.push_back(std::stoi(sequenceElement));
-        } 
-        catch (const std::invalid_argument&)
-        {
-            std::cout << "[ERROR] Input should be a sequence of integers." << std::endl;
-            return 1;
-        }
+        deserializeNumberSequence(input, numberSequence);
+    } 
+    catch (const std::invalid_argument&)
+    {
+        std::cout << "[ERROR] Input should be a sequence of integers." << std::endl;
+        return 1;
     }
 
     if(numberSequence.empty())
@@ -45,38 +86,9 @@ int main()
     {
         std::cout << "[ERROR] The number of elements in the sequence not match with the number of the elemenets defined in the input." << std::endl;
         return 1;
-
-    }
-    if(numberOfElements == 1)
-    {
-        std::cout << "Yes" << std::endl;
-        return 0;
     }
 
-    int intermediateElementOfTheSequence = (numberOfElements / 2) + 1;
-    
-    std::stack<int> elementsStack;
-    for(int i = 1; i < intermediateElementOfTheSequence; ++i) 
-    {
-        elementsStack.push(numberSequence[i]);
-    }
-
-    if(numberOfElements % 2 != 0)
-    {
-        intermediateElementOfTheSequence += 1;
-    }
-
-    for(int i = intermediateElementOfTheSequence; i <= numberOfElements ; ++i) 
-    {
-        if(numberSequence[i] != elementsStack.top())
-        {
-            std::cout << "NO" << std::endl;
-            return 1;
-        }
-        elementsStack.pop();
-    }
-
-    std::cout << "Yes" << std::endl;
+    std::cout << (isPalindrome(numberOfElements, numberSequence) ? "Yes" : "No") << std::endl;
     return 0;
 }
 
