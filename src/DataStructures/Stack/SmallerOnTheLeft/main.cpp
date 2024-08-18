@@ -2,40 +2,36 @@
 #include <vector>
 #include <stack>
 
-int FindPreviousSmallerElement(const std::stack<int>& alreadyComputedNumbers, const int& number)
-{
-    int previousSmallerNumber = -1;
-    std::stack<int> alreadyComputedNumbers_copy = alreadyComputedNumbers;
-    while (!alreadyComputedNumbers_copy.empty()) 
-    {
-        auto lastNumber = alreadyComputedNumbers_copy.top();
-        if(lastNumber < number)
-        {
-            previousSmallerNumber = lastNumber;
-            break;
-        }
-        alreadyComputedNumbers_copy.pop();
-    }
-    return previousSmallerNumber;
-}
-
 int main()
 {
     std::vector<int> numberSequence = { 2, 5, 3, 7, 8, 1, 9 };
-    std::stack<int> alreadyComputedNumbers;
+    std::stack<int> smallerNumbers;
 
     for(int i = 0; i < numberSequence.size(); ++i)
     {
         auto number = numberSequence[i];
-        if(alreadyComputedNumbers.empty())
+        while(!smallerNumbers.empty())
         {
-            alreadyComputedNumbers.push(number);
-            numberSequence[i] = -1;
-            continue;
+            if(smallerNumbers.top() >= number)
+            {
+                smallerNumbers.pop();
+            }
+            else 
+            {
+                break;
+            }
         }
-        
-        numberSequence[i] = FindPreviousSmallerElement(alreadyComputedNumbers, number);
-        alreadyComputedNumbers.push(number);
+
+        if(smallerNumbers.empty())
+        {
+            numberSequence[i] = -1;
+        }
+        else
+        {
+            numberSequence[i] = smallerNumbers.top();
+        }
+
+        smallerNumbers.push(number);
     }
 
     for(const int& num : numberSequence)
