@@ -4,24 +4,24 @@
 
 int main()
 {
-    std::vector<int> numberSequence = { 2, 5, 3, 7, 8, 1, 9 }; //[-1, 2, 2, 3, 7, -1, 1]
-    //std::vector<int> numberSequence = { 5, 7, 4, 9, 8, 10 }; //[-1, 5, -1, 4, 4, 8]
+    //std::vector<int> numberSequence = { 2, 5, 3, 7, 8, 1, 9 }; //[-1, 2, 2, 3, 7, -1, 1]
+    std::vector<int> numberSequence = { 5, 7, 4, 9, 8, 10 }; //[-1, 5, -1, 4, 4, 8]
     std::stack<int> smallerNumberStack;
-    std::vector<int> computedNumberSequence;
 
-    for(const int& number : numberSequence)
+    for(int i = 0; i < numberSequence.size(); ++i)
     {
+        auto number = numberSequence[i];
         if(smallerNumberStack.empty())
         {
             smallerNumberStack.push(number);
-            computedNumberSequence.push_back(-1);
+            numberSequence[i] = -1;
             continue;
         }
 
         auto lastSmallerNumber = smallerNumberStack.top();
         if(lastSmallerNumber < number)
         { 
-            computedNumberSequence.push_back(lastSmallerNumber);
+            numberSequence[i] = lastSmallerNumber;
         }
         else 
         {
@@ -33,16 +33,17 @@ int main()
                 if(lastNumber < number)
                 {
                     smallerNumber = lastNumber;
+                    break;
                 }
                 copyStack.pop();
             }
-            computedNumberSequence.push_back(smallerNumber);
+            numberSequence[i] = smallerNumber;
         }
 
         smallerNumberStack.push(number);
     }
 
-    for(const int& num : computedNumberSequence)
+    for(const int& num : numberSequence)
     {
         std::cout << num << ", ";
     }
