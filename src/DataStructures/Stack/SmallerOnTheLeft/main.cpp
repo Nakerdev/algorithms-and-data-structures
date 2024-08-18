@@ -4,43 +4,43 @@
 
 int main()
 {
-    //std::vector<int> numberSequence = { 2, 5, 3, 7, 8, 1, 9 }; //[-1, 2, 2, 3, 7, -1, 1]
-    std::vector<int> numberSequence = { 5, 7, 4, 9, 8, 10 }; //[-1, 5, -1, 4, 4, 8]
-    std::stack<int> smallerNumberStack;
+    //std::vector<int> numberSequence = { 2, 5, 3, 7, 8, 1, 9 }; //output: -1, 2, 2, 3, 7, -1, 1
+    std::vector<int> numberSequence = { 5, 7, 4, 9, 8, 10 }; //output: -1, 5, -1, 4, 4, 8
+    std::stack<int> alreadyComputedNumbers;
 
     for(int i = 0; i < numberSequence.size(); ++i)
     {
         auto number = numberSequence[i];
-        if(smallerNumberStack.empty())
+        if(alreadyComputedNumbers.empty())
         {
-            smallerNumberStack.push(number);
+            alreadyComputedNumbers.push(number);
             numberSequence[i] = -1;
             continue;
         }
 
-        auto lastSmallerNumber = smallerNumberStack.top();
+        auto lastSmallerNumber = alreadyComputedNumbers.top();
         if(lastSmallerNumber < number)
         { 
             numberSequence[i] = lastSmallerNumber;
         }
         else 
         {
-             int smallerNumber = -1;
-             std::stack<int> copyStack = smallerNumberStack;
-             while (!copyStack.empty()) 
+             int previousSmallerNumber = -1;
+             std::stack<int> alreadyComputedNumbers_copy = alreadyComputedNumbers;
+             while (!alreadyComputedNumbers_copy.empty()) 
              {
-                auto lastNumber = copyStack.top();
+                auto lastNumber = alreadyComputedNumbers_copy.top();
                 if(lastNumber < number)
                 {
-                    smallerNumber = lastNumber;
+                    previousSmallerNumber = lastNumber;
                     break;
                 }
-                copyStack.pop();
+                alreadyComputedNumbers_copy.pop();
             }
-            numberSequence[i] = smallerNumber;
+            numberSequence[i] = previousSmallerNumber;
         }
 
-        smallerNumberStack.push(number);
+        alreadyComputedNumbers.push(number);
     }
 
     for(const int& num : numberSequence)
