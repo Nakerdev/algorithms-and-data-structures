@@ -9,25 +9,24 @@ bool IsThereMoreThanOnePlayer(const std::queue<std::string>& players)
     return players.size() > 1;
 }
 
-std::string HotPotatoGame(const std::queue<std::string>& childrens, int passes)
+std::string HotPotatoGame(std::queue<std::string>& childrens, int passes)
 {
-    std::queue<std::string> gameQueue = childrens;
     int gameCounter = passes;
-    while(IsThereMoreThanOnePlayer(gameQueue))
+    while(IsThereMoreThanOnePlayer(childrens))
     {
-        auto children = gameQueue.front();
-        gameQueue.pop();
+        auto children = childrens.front();
+        childrens.pop();
         if(gameCounter == 1)
         {
             gameCounter = passes;
         }
         else
         {
-            gameQueue.push(children);
+            childrens.push(children);
             --gameCounter;
         }
     }
-    return gameQueue.front(); 
+    return childrens.front(); 
 }
 
 int main()
